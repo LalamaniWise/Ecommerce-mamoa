@@ -31,7 +31,7 @@ const Footer = () => {
             <h4>COMPANY</h4>
             <a href='/'>home</a>
             <a href='/'>About Us</a>
-            <a href='/'>Work With us</a>
+            <a href='/sell'>Sell on Mamoa</a>
             <a href='/'>Our blogd</a>
             <a href='/'>Terms & conditions</a>
 
@@ -40,7 +40,7 @@ const Footer = () => {
          <div className='footer__col'>
             <h4>USEFUL LINKS</h4>
             <a href='/'>help</a>
-            <a href='/'>Track your order</a>
+            <a href='/dashboard/orders'>Track your order</a>
             <a href='/'>Men</a>
             <a href='/'>Women</a>
             <a href='/'>Dresses</a>
@@ -62,7 +62,7 @@ const Footer = () => {
     </footer>
 
     <div className='footer__bar'>
-        Copyright@2025 by Lalamani Ramaru, All rights reserved.
+        Copyright © {new Date().getFullYear()} Mamoa Mall by Lalamani Ramaru. All rights reserved.
     </div>
     </>
       

@@ -1,11 +1,13 @@
 {
   "name": "mamoa-commerce-backend",
-  "version": "1.0.0",
-  "description": "",
+  "version": "2.0.0",
+  "description": "Mamoa Mall API - a multi-store online mall where business owners rent a store",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "start:dev": "nodemon index.js"
+    "start:dev": "nodemon index.js",
+    "seed": "node seed/seed.js",
+    "seed:reset": "node seed/seed.js --reset"
   },
   "keywords": [],
   "author": "Lalamani_Ramaru",
@@ -13,14 +15,15 @@
   "type": "commonjs",
   "dependencies": {
     "bcrypt": "^6.0.0",
-    "body-parser": "^2.2.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "mongodb": "^6.17.0",
     "mongoose": "^8.15.2",
+    "multer": "^2.0.2"
+  },
+  "devDependencies": {
     "nodemon": "^3.1.10"
   }
 }

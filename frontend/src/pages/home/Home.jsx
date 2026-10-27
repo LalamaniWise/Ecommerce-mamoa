@@ -6,19 +6,21 @@ import TrendingProducts from '../shop/TrendingProducts'
 import DealsSection from './DealsSection'
 import PromoBanner from './PromoBanner'
 import Blogs from '../blogs/Blogs'
-
+import FeaturedStores from './FeaturedStores'
+import SellCTA from './SellCTA'
 
 const Home = () => {
   return (
     <>
-      <Banner/>
-      <Categories/>
-      <HeroSection/>
-      <TrendingProducts/>
-      <DealsSection/>
-      <PromoBanner/>
-      <Blogs/>
-    
+      <Banner />
+      <Categories />
+      <FeaturedStores />
+      <HeroSection />
+      <TrendingProducts />
+      <SellCTA />
+      <DealsSection />
+      <PromoBanner />
+      <Blogs />
     </>
   )
 }

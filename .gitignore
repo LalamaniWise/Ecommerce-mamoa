@@ -1,0 +1,16 @@
+# dependencies
+node_modules/
+
+# secrets — never commit these
+.env
+.env.*
+!.env.example
+
+# uploaded product/store images (local development)
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# build output
+dist/
+*.log
+.DS_Store

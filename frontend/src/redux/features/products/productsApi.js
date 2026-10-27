@@ -1,68 +1,58 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { getBaseUrl } from '../../../utils/baseURL'
+import { baseApi } from '../../api/baseApi'
 
-const productdApi = createApi({
-    reducerPath: 'productsApi',
-    baseQuery:fetchBaseQuery ({
-        baseUrl: `${getBaseUrl()}/api/products`,
-        credentials: 'include'
-    }),
-    tagTypes: ["Products"],
+const clean = (params) =>
+    Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined && v !== '' && v !== null && v !== 'all'))
+
+const productsApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
+        // public
         fetchAllProducts: builder.query({
-            query: ({category, color, minPrice, maxPrice,page=1, limit =10}) => {
-                const queryParams = new URLSearchParams({
-                    category: category || '',
-                    color: color || '',
-                    minPrice: minPrice || 0,
-                    maxPrice: maxPrice || '',
-                    page: page.toString(),
-                    limit: limit.toString(),
-                }).toString();
-                return `/?${queryParams}`
-            },
-            providesTags: ["Products"]
-        }),
-        
-        fetchProductById : builder.query ({
-            query: (id) => `/${id}`,
-            providesTags: (result, error, id) => [{type: "Products", id}]
-        }),
-
-        addProduct: builder.mutation({
-            query: (newProduct) => ({
-                url: "/create-product",
-                method : "POST",
-                credentials: "include"
+            query: ({ page = 1, limit = 12, ...filters } = {}) => ({
+                url: '/products',
+                params: clean({ ...filters, page, limit }),
             }),
-            invalidatesTags: ["Products"]
+            providesTags: ['Products'],
+        }),
+        fetchProductFilters: builder.query({
+            query: () => '/products/meta/filters',
+            providesTags: ['Products'],
+        }),
+        fetchProductById: builder.query({
+            query: (id) => `/products/${id}`,
+            providesTags: (result, error, id) => [{ type: 'Product', id }],
+        }),
+        fetchRelatedProducts: builder.query({
+            query: (id) => `/products/related/${id}`,
+        }),
+        postReview: builder.mutation({
+            query: (review) => ({ url: '/reviews', method: 'POST', body: review }),
+            invalidatesTags: (result, error, { productId }) => [{ type: 'Product', id: productId }, 'Products'],
         }),
 
-        fetchRelatedProducts: builder.query({
-            query: (id) => `/related/${id}`
+        // store owner
+        fetchMyProducts: builder.query({
+            query: () => '/products/mine/list',
+            providesTags: ['MyProducts'],
+        }),
+        addProduct: builder.mutation({
+            query: (newProduct) => ({ url: '/products/create-product', method: 'POST', body: newProduct }),
+            invalidatesTags: ['Products', 'MyProducts', 'MyStore', 'Stats'],
         }),
         updateProduct: builder.mutation({
-            query: ({id,...rest}) => ({
-                url: `/update-product/${id}`,
-                method: "PATCH",
-                body: rest,
-                credentials: "include"
-            }),
-            invalidatesTags: ["Products"],
+            query: ({ id, ...rest }) => ({ url: `/products/update-product/${id}`, method: 'PATCH', body: rest }),
+            invalidatesTags: (result, error, { id }) => ['Products', 'MyProducts', 'Stats', { type: 'Product', id }],
         }),
-
         deleteProduct: builder.mutation({
-             query: ({id}) => ({
-                url: `/${id}`,
-                method: "DELETE",
-                credentials: "include"
-            }),
-            invalidatesTags: (result, error, id) => [{type: "Products", id}]
-        })
-    })
+            query: (id) => ({ url: `/products/${id}`, method: 'DELETE' }),
+            invalidatesTags: ['Products', 'MyProducts', 'MyStore', 'Stats'],
+        }),
+    }),
 })
 
-export const {useFetchAllProductsQuery,useFetchProductByIdQuery,useAddProductMutation,
-    useUpdateProductMutation, useDeleteProductMutation,useFetchRelatedProductsQuery} = productdApi;
+export const {
+    useFetchAllProductsQuery, useFetchProductFiltersQuery, useFetchProductByIdQuery,
+    useFetchRelatedProductsQuery, usePostReviewMutation, useFetchMyProductsQuery,
+    useAddProductMutation, useUpdateProductMutation, useDeleteProductMutation,
+} = productsApi
 
-    export default productdApi;
+export default productsApi

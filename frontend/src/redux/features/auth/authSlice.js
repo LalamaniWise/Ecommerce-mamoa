@@ -1,31 +1,40 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const loadUserFromLocalStorage = () =>{
+const loadAuthFromLocalStorage = () => {
     try {
-        const serializedState = localStorage.getItem('user');
-        if(serializedState == null) return {user: null};
-        return {user: JSON.parse(serializedState)}
+        const serializedState = localStorage.getItem('auth');
+        if (serializedState == null) return { user: null, token: null, store: null };
+        return JSON.parse(serializedState);
     } catch (error) {
-        return{user: null}
+        return { user: null, token: null, store: null };
     }
 }
-const initialState = loadUserFromLocalStorage();
+
+const save = (state) => {
+    try {
+        localStorage.setItem('auth', JSON.stringify({ user: state.user, token: state.token, store: state.store }));
+    } catch (_) { /* storage unavailable */ }
+}
 
 const authSlice = createSlice({
     name: 'auth',
-    initialState,
+    initialState: loadAuthFromLocalStorage(),
     reducers: {
+        // payload: { user, token?, store? }
         setUser: (state, action) => {
-             state.user = action.payload.user;
-             localStorage.setItem('user', JSON.stringify(state.user))
+            state.user = action.payload.user;
+            if (action.payload.token !== undefined) state.token = action.payload.token;
+            if (action.payload.store !== undefined) state.store = action.payload.store;
+            save(state);
         },
-        logout : (state) => {
+        logout: (state) => {
             state.user = null;
-            localStorage.removeItem('user')
+            state.token = null;
+            state.store = null;
+            try { localStorage.removeItem('auth') } catch (_) { /* ignore */ }
         }
     }
 })
 
-export const {setUser, logout} = authSlice.actions;
-//export default authSlice.reducer;
+export const { setUser, logout } = authSlice.actions;
 export default authSlice.reducer;

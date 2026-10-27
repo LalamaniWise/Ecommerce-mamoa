@@ -1,35 +1,20 @@
-import React, { useState, useEffect  } from 'react'
+import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-
-import products from '../../data/products.json'
-import ProductCards from '../shop/ProductCards';
+import ProductBrowser from '../shop/ProductBrowser'
+import { PageHeader } from '../../components/common/ui'
 
 const CategoryPage = () => {
-    const {categoryName} = useParams();
-    const [filteredProducts, setFilteredProducts] = useState([]);
-    //console.log(categoryName)
+  const { categoryName } = useParams();
 
-    useEffect(() => {
-        const filtered = products.filter((product) => product.category === categoryName.toLowerCase());
-        setFilteredProducts(filtered);
- } , [categoryName])
-
-    useEffect(() => {
-        window.scrollTo(0, 0)
-    })
+  useEffect(() => { window.scrollTo(0, 0) }, [categoryName])
 
   return (
     <>
-    <section className='section__container bg-primary-light'>
-        <h2 className='section__header capitalize'>{categoryName}</h2>
-        <p className='section__subheader'>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ea iure exercitationem voluptatem harum quaerat corporis omnis 
-            atque sed obcaecati vero odio qui, recusandae mollitia ullam ex saepe consectetur id inventore.</p>
-    </section>
-
-    {/*product card*/}
-    <div className='section__container'>
-        <ProductCards products={filteredProducts}/>
-    </div>
+      <PageHeader title={categoryName}>Shop {categoryName} from all the stores in the mall.</PageHeader>
+      <div className='section__container'>
+        {/* key resets the filters when the category in the URL changes */}
+        <ProductBrowser key={categoryName} initialCategory={categoryName.toLowerCase()} />
+      </div>
     </>
   )
 }
